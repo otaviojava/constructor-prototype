@@ -19,7 +19,7 @@ public class Animal {
 
 
     @Constructor
-    public Animal(@Id String id, @Column String name, @Column String race) {
+    Animal(@Id String id, @Column String name, @Column String race) {
         this.id = id;
         this.name = name;
         this.race = race;
@@ -61,5 +61,9 @@ public class Animal {
                 ", name='" + name + '\'' +
                 ", race='" + race + '\'' +
                 '}';
+    }
+
+    public static AnimalBuilder builder() {
+        return new AnimalBuilder();
     }
 }
