@@ -6,6 +6,8 @@ import com.otaviojava.converter.Constructor;
 import com.otaviojava.converter.Entity;
 import com.otaviojava.converter.Id;
 
+import java.util.Objects;
+
 @Entity
 public class Animal {
 
@@ -21,5 +23,43 @@ public class Animal {
         this.id = id;
         this.name = name;
         this.race = race;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getRace() {
+        return race;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Animal animal = (Animal) o;
+        return Objects.equals(id, animal.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Animal{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", race='" + race + '\'' +
+                '}';
     }
 }
