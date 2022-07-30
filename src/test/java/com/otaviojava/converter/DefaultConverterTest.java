@@ -19,6 +19,12 @@ class DefaultConverterTest {
     }
 
     @Test
+    public void shouldReturnNPEMap() {
+        Assertions.assertThrows(NullPointerException.class, ()->
+                converter.toMap(null));
+    }
+
+    @Test
     public void shouldReturnEntityUsingField() {
         Person otavio = Person.builder().id("10").name("Otavio").city("Salvador").build();
         Map<String, Object> map = this.converter.toMap(otavio);
