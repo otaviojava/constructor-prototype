@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class DefaultConverter implements Converter {
 
@@ -25,11 +26,14 @@ public class DefaultConverter implements Converter {
         for (Field field : entity.getClass().getDeclaredFields()) {
             field.setAccessible(true);
             Object value = getValue(entity, field);
-            String key = Optional
-                    .ofNullable(field.getAnnotation(Column.class))
-                    .map(Column::value)
-                    .orElse(field.getName());
-            map.put(key, value);
+            if (value != null) {
+                String key = Optional
+                        .ofNullable(field.getAnnotation(Column.class))
+                        .map(Column::value)
+                        .filter(Predicate.not(String::isBlank))
+                        .orElse(field.getName());
+                map.put(key, value);
+            }
         }
 
         return map;
@@ -55,6 +59,7 @@ public class DefaultConverter implements Converter {
     private static <T> String getEntityName(T entity) {
         return Optional.ofNullable(entity.getClass().getAnnotation(Entity.class))
                 .map(Entity::value)
-                .orElse(entity.getClass().getName());
+                .filter(Predicate.not(String::isBlank))
+                .orElse(entity.getClass().getSimpleName());
     }
 }

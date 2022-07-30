@@ -17,6 +17,7 @@ class DefaultConverterTest {
     public void setUp() {
         this.converter = new DefaultConverter();
     }
+
     @Test
     public void shouldReturnErrorOnMap() {
         Person otavio = Person.builder().id("10").name("Otavio").city("Salvador").build();
@@ -25,7 +26,7 @@ class DefaultConverterTest {
         Assertions.assertEquals("10", map.get("id"));
         Assertions.assertEquals("Otavio", map.get("name"));
         Assertions.assertEquals("Salvador", map.get("city"));
-        Assertions.assertEquals("Entity", Person.class.getName());
+        Assertions.assertEquals(Person.class.getSimpleName(), map.get("Entity"));
     }
 
 }
