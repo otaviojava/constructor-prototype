@@ -21,7 +21,6 @@ public class DefaultConverter implements Converter {
         Objects.requireNonNull(entity, "entity is required");
         Map<String, Object> map = new HashMap<>();
         String entityName = getEntityName(entity);
-        Constructor<T> constructor = getConstructor(entity);
         map.put("Entity", entityName);
         for (Field field : entity.getClass().getDeclaredFields()) {
             field.setAccessible(true);

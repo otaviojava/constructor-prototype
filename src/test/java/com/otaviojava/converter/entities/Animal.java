@@ -11,10 +11,13 @@ import java.util.Objects;
 @Entity
 public class Animal {
 
+    @Id
     private final String id;
 
+    @Column
     private final  String name;
 
+    @Column
     private final  String race;
 
 
