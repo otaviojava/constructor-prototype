@@ -19,7 +19,7 @@ class DefaultConverterTest {
     }
 
     @Test
-    public void shouldReturnErrorOnMap() {
+    public void shouldReturnEntityUsingField() {
         Person otavio = Person.builder().id("10").name("Otavio").city("Salvador").build();
         Map<String, Object> map = this.converter.toMap(otavio);
         Assertions.assertNotNull(map);
