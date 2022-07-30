@@ -59,7 +59,7 @@ public class DefaultConverter implements Converter {
                     .ofNullable(field.getAnnotation(Id.class))
                     .map(Id::value)
                     .filter(Predicate.not(String::isBlank))
-                    .orElse(field.getName());
+                    .orElse("_id");
             map.put(key, value);
         }
     }
