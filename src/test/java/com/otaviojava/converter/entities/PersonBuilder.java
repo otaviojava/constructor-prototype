@@ -1,4 +1,4 @@
-package com.otaviojava.converter;
+package com.otaviojava.converter.entities;
 
 public class PersonBuilder {
     private String id;

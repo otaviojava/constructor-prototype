@@ -1,5 +1,9 @@
-package com.otaviojava.converter;
+package com.otaviojava.converter.entities;
 
+
+import com.otaviojava.converter.Column;
+import com.otaviojava.converter.Entity;
+import com.otaviojava.converter.Id;
 
 import java.util.Objects;
 
