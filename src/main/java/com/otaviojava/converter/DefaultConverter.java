@@ -25,18 +25,43 @@ public class DefaultConverter implements Converter {
         map.put("Entity", entityName);
         for (Field field : entity.getClass().getDeclaredFields()) {
             field.setAccessible(true);
-            Object value = getValue(entity, field);
-            if (value != null) {
-                String key = Optional
-                        .ofNullable(field.getAnnotation(Column.class))
-                        .map(Column::value)
-                        .filter(Predicate.not(String::isBlank))
-                        .orElse(field.getName());
-                map.put(key, value);
+            Id id = field.getAnnotation(Id.class);
+            if (id != null) {
+                feedId(entity, map, field);
+
             }
+            Column column = field.getAnnotation(Column.class);
+            if (column != null) {
+                extractColumn(entity, map, field);
+            }
+
         }
 
         return map;
+    }
+
+    private <T> void extractColumn(T entity, Map<String, Object> map, Field field) {
+        Object value = getValue(entity, field);
+        if (value != null) {
+            String key = Optional
+                    .ofNullable(field.getAnnotation(Column.class))
+                    .map(Column::value)
+                    .filter(Predicate.not(String::isBlank))
+                    .orElse(field.getName());
+            map.put(key, value);
+        }
+    }
+
+    private <T> void feedId(T entity, Map<String, Object> map, Field field) {
+        Object value = getValue(entity, field);
+        if (value != null) {
+            String key = Optional
+                    .ofNullable(field.getAnnotation(Id.class))
+                    .map(Id::value)
+                    .filter(Predicate.not(String::isBlank))
+                    .orElse(field.getName());
+            map.put(key, value);
+        }
     }
 
     private static <T> Object getValue(T entity, Field field) {
@@ -56,7 +81,7 @@ public class DefaultConverter implements Converter {
         throw new IllegalStateException("There is no a legal constructor");
     }
 
-    private static <T> String getEntityName(T entity) {
+    private <T> String getEntityName(T entity) {
         return Optional.ofNullable(entity.getClass().getAnnotation(Entity.class))
                 .map(Entity::value)
                 .filter(Predicate.not(String::isBlank))
