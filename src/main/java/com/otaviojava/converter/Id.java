@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  *  @see Entity
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target({ElementType.PARAMETER, ElementType.FIELD})
 public @interface Id {
 
     String value() default "_id";
