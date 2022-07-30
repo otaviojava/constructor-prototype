@@ -1,12 +1,13 @@
 package com.otaviojava.converter;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-public class DefaultConverter implements Converter{
+public class DefaultConverter implements Converter {
 
     @Override
     public <T> T toEntity(Map<String, Object> map) {
@@ -19,16 +20,32 @@ public class DefaultConverter implements Converter{
         Objects.requireNonNull(entity, "entity is required");
         Map<String, Object> map = new HashMap<>();
         String entityName = getEntityName(entity);
-        map.put("Entity", entityName);
         Constructor<T> constructor = getConstructor(entity);
-        if (constructor != null) return constructor;
+        map.put("Entity", entityName);
+        for (Field field : entity.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            Object value = getValue(entity, field);
+            String key = Optional
+                    .ofNullable(field.getAnnotation(Column.class))
+                    .map(Column::value)
+                    .orElse(field.getName());
+            map.put(key, value);
+        }
 
-        return null;
+        return map;
+    }
+
+    private static <T> Object getValue(T entity, Field field) {
+        try {
+            return field.get(entity);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private <T> Constructor<T> getConstructor(T entity) {
         for (Constructor<?> constructor : entity.getClass().getDeclaredConstructors()) {
-            if(constructor.getParameterCount() == 0) {
+            if (constructor.getParameterCount() == 0) {
                 return (Constructor<T>) constructor;
             }
         }
