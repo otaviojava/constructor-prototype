@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.Map;
 
 class DefaultConverterTest {
@@ -53,7 +54,16 @@ class DefaultConverterTest {
 
     @Test
     public void shouldConvertToMapFields() {
-
+        Map<String, Object> map = new HashMap<>();
+        map.put("Entity", Person.class.getSimpleName());
+        map.put("_id", "12");
+        map.put("name", "Otavio");
+        map.put("city", "Salvador");
+        Person otavio = converter.toEntity(map);
+        Assertions.assertNotNull(otavio);
+        Assertions.assertEquals("12", otavio.getId());
+        Assertions.assertEquals("Otavio", otavio.getName());
+        Assertions.assertEquals("Salvador", otavio.getCity());
     }
 
 }
