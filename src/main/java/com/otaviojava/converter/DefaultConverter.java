@@ -17,6 +17,7 @@ public class DefaultConverter implements Converter {
         Objects.requireNonNull(entity, "entity is required");
         beans.put(getEntityName(entity), entity);
     }
+
     @Override
     public <T> T toEntity(Map<String, Object> map) {
         Objects.requireNonNull(map, "map is required");
@@ -24,7 +25,10 @@ public class DefaultConverter implements Converter {
                 .map(Object::toString)
                 .orElseThrow(() -> new RuntimeException("The Entity key is mandatory"));
 
-
+        Class<T> bean = Optional.ofNullable(beans.get(entity))
+                .map(c -> (Class<T>) c)
+                .orElseThrow(() -> new RuntimeException("It does not bean to the entity " + entity));
+        Constructor<T> constructor = getConstructor(bean);
         return null;
     }
 
@@ -83,14 +87,14 @@ public class DefaultConverter implements Converter {
         }
     }
 
-    private <T> Constructor<T> getConstructor(T entity) {
+    private <T> Constructor<T> getConstructor(Class<T> entity) {
         Constructor<T> defaultConstructor = null;
         for (Constructor<?> constructor : entity.getClass().getDeclaredConstructors()) {
             if (constructor.getParameterCount() == 0) {
                 defaultConstructor = (Constructor<T>) constructor;
             }
-            if(constructor.getAnnotation(com.otaviojava.converter.Constructor.class) != null) {
-               return  (Constructor<T>) constructor;
+            if (constructor.getAnnotation(com.otaviojava.converter.Constructor.class) != null) {
+                return (Constructor<T>) constructor;
             }
         }
         return Optional.ofNullable(defaultConstructor)
