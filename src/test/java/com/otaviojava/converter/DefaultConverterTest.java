@@ -16,6 +16,8 @@ class DefaultConverterTest {
     @BeforeEach
     public void setUp() {
         this.converter = new DefaultConverter();
+        this.converter.add(Animal.class);
+        this.converter.add(Person.class);
     }
 
     @Test
