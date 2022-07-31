@@ -45,4 +45,15 @@ class DefaultConverterTest {
         Assertions.assertEquals(Animal.class.getSimpleName(), map.get("Entity"));
     }
 
+    @Test
+    public void shouldReturnNPEWhenConvertMap() {
+        Assertions.assertThrows(NullPointerException.class, () ->
+                converter.toEntity(null));
+    }
+
+    @Test
+    public void shouldConvertToMapFields() {
+
+    }
+
 }
