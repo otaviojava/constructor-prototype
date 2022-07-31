@@ -39,6 +39,7 @@ public class DefaultConverter implements Converter {
 
     private static <T> T getInstance(Constructor<T> constructor) {
         try {
+            constructor.setAccessible(true);
             return constructor.newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
@@ -102,7 +103,7 @@ public class DefaultConverter implements Converter {
 
     private <T> Constructor<T> getConstructor(Class<T> entity) {
         Constructor<T> defaultConstructor = null;
-        for (Constructor<?> constructor : entity.getClass().getDeclaredConstructors()) {
+        for (Constructor<?> constructor : entity.getDeclaredConstructors()) {
             if (constructor.getParameterCount() == 0) {
                 defaultConstructor = (Constructor<T>) constructor;
             }
@@ -118,6 +119,6 @@ public class DefaultConverter implements Converter {
         return Optional.ofNullable(entity.getAnnotation(Entity.class))
                 .map(Entity::value)
                 .filter(Predicate.not(String::isBlank))
-                .orElse(entity.getClass().getSimpleName());
+                .orElse(entity.getSimpleName());
     }
 }
