@@ -32,18 +32,26 @@ public class DefaultConverter implements Converter {
         Constructor<T> constructor = getConstructor(bean);
         if (constructor.getParameterCount() == 0) {
             T instance = getInstance(constructor);
+            for (Field field : bean.getDeclaredFields()) {
+                field.setAccessible(true);
+                if (field.getAnnotation(Id.class) != null) {
+                    String key = getIdValue(field);
+                    Object value = map.get(key);
+                    if (value != null) {
+                        setValue(instance, field, value);
+                    }
+                } else if (field.getAnnotation(Column.class) != null) {
+                    String key = getColumnName(field);
+                    Object value = map.get(key);
+                    if (value != null) {
+                        setValue(instance, field, value);
+                    }
+                }
+            }
+            return instance;
 
         }
         return null;
-    }
-
-    private static <T> T getInstance(Constructor<T> constructor) {
-        try {
-            constructor.setAccessible(true);
-            return constructor.newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
@@ -57,7 +65,6 @@ public class DefaultConverter implements Converter {
             Id id = field.getAnnotation(Id.class);
             if (id != null) {
                 feedId(entity, map, field);
-
             }
             Column column = field.getAnnotation(Column.class);
             if (column != null) {
@@ -69,14 +76,27 @@ public class DefaultConverter implements Converter {
         return map;
     }
 
+    private <T> void setValue(T instance, Field field, Object value) {
+        try {
+            field.set(instance, value);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private <T> T getInstance(Constructor<T> constructor) {
+        try {
+            constructor.setAccessible(true);
+            return constructor.newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private <T> void extractColumn(T entity, Map<String, Object> map, Field field) {
         Object value = getValue(entity, field);
         if (value != null) {
-            String key = Optional
-                    .ofNullable(field.getAnnotation(Column.class))
-                    .map(Column::value)
-                    .filter(Predicate.not(String::isBlank))
-                    .orElse(field.getName());
+            String key = getColumnName(field);
             map.put(key, value);
         }
     }
@@ -84,13 +104,27 @@ public class DefaultConverter implements Converter {
     private <T> void feedId(T entity, Map<String, Object> map, Field field) {
         Object value = getValue(entity, field);
         if (value != null) {
-            String key = Optional
-                    .ofNullable(field.getAnnotation(Id.class))
-                    .map(Id::value)
-                    .filter(Predicate.not(String::isBlank))
-                    .orElse("_id");
+            String key = getIdValue(field);
             map.put(key, value);
         }
+    }
+
+    private static String getIdValue(Field field) {
+        String key = Optional
+                .ofNullable(field.getAnnotation(Id.class))
+                .map(Id::value)
+                .filter(Predicate.not(String::isBlank))
+                .orElse("_id");
+        return key;
+    }
+
+    private static String getColumnName(Field field) {
+        String key = Optional
+                .ofNullable(field.getAnnotation(Column.class))
+                .map(Column::value)
+                .filter(Predicate.not(String::isBlank))
+                .orElse(field.getName());
+        return key;
     }
 
     private static <T> Object getValue(T entity, Field field) {
