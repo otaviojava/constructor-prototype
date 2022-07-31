@@ -85,17 +85,13 @@ public class DefaultConverter implements Converter {
 
     private <T> Constructor<T> getConstructor(T entity) {
         Constructor<T> defaultConstructor = null;
-        Constructor<T> constructorAnnotation = null;
         for (Constructor<?> constructor : entity.getClass().getDeclaredConstructors()) {
             if (constructor.getParameterCount() == 0) {
                 defaultConstructor = (Constructor<T>) constructor;
             }
             if(constructor.getAnnotation(com.otaviojava.converter.Constructor.class) != null) {
-                constructorAnnotation = (Constructor<T>) constructor;
+               return  (Constructor<T>) constructor;
             }
-        }
-        if(constructorAnnotation != null) {
-            return constructorAnnotation;
         }
         return Optional.ofNullable(defaultConstructor)
                 .orElseThrow(() -> new IllegalStateException("There is no a legal constructor"));
