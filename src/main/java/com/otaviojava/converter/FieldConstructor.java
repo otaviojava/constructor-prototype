@@ -21,24 +21,32 @@ public class FieldConstructor implements EntityConverter {
             Id id = field.getAnnotation(Id.class);
 
             if (id != null) {
-
+                field.setAccessible(true);
+                String name = Optional.of(id).map(Id::value)
+                        .filter(Predicate.not(String::isBlank))
+                        .orElse(field.getName());
+                setValue(map, instance, field, name);
             } else if (column != null) {
                 field.setAccessible(true);
                 String name = Optional.of(column).map(Column::value)
                         .filter(Predicate.not(String::isBlank))
                         .orElse(field.getName());
-                Object value = map.get(name);
-                if (value != null) {
-                    try {
-                        field.set(instance, value);
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+                setValue(map, instance, field, name);
             }
 
         }
         return null;
+    }
+
+    private static <T> void setValue(Map<String, Object> map, T instance, Field field, String name) {
+        Object value = map.get(name);
+        if (value != null) {
+            try {
+                field.set(instance, value);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     private static <T> T getInstance(Constructor<T> constructor) {
