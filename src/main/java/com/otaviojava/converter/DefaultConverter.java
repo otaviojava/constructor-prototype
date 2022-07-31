@@ -2,6 +2,7 @@ package com.otaviojava.converter;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -29,7 +30,19 @@ public class DefaultConverter implements Converter {
                 .map(c -> (Class<T>) c)
                 .orElseThrow(() -> new RuntimeException("It does not bean to the entity " + entity));
         Constructor<T> constructor = getConstructor(bean);
+        if (constructor.getParameterCount() == 0) {
+            T instance = getInstance(constructor);
+
+        }
         return null;
+    }
+
+    private static <T> T getInstance(Constructor<T> constructor) {
+        try {
+            return constructor.newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
