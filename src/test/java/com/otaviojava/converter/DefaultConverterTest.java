@@ -21,6 +21,12 @@ class DefaultConverterTest {
     }
 
     @Test
+    public void shouldReturnErrorWhenAddNull() {
+        Assertions.assertThrows(NullPointerException.class, () ->
+                this.converter.add(null));
+    }
+
+    @Test
     public void shouldReturnNPEMap() {
         Assertions.assertThrows(NullPointerException.class, ()->
                 converter.toMap(null));
