@@ -12,7 +12,7 @@ public interface EntityCreator {
         if(constructor.getParameterCount() == 0) {
             return new EntityCreatorField();
         }
-        return null;
+        return new EntityCreatorConstructor();
     }
 
 }
