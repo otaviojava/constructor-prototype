@@ -22,7 +22,7 @@ public class Animal {
 
 
     @Constructor
-    Animal(@Id String id, @Column String name, @Column String race) {
+    Animal(@Id String id, @Column("name") String name, @Column("race") String race) {
         this.id = id;
         this.name = name;
         this.race = race;
