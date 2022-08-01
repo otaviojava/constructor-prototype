@@ -82,7 +82,7 @@ class DefaultConverterTest {
     @Test
     public void shouldConvertTMapConstructor() {
         Map<String, Object> map = new HashMap<>();
-        map.put("Entity", Person.class.getSimpleName());
+        map.put("Entity", Animal.class.getSimpleName());
         map.put("_id", "12");
         map.put("name", "Ada");
         map.put("race", "Dog");
