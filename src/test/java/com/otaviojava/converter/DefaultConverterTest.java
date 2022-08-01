@@ -79,4 +79,18 @@ class DefaultConverterTest {
         Assertions.assertEquals("Salvador", otavio.getCity());
     }
 
+    @Test
+    public void shouldConvertTMapConstructor() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("Entity", Person.class.getSimpleName());
+        map.put("_id", "12");
+        map.put("name", "Ada");
+        map.put("race", "Dog");
+        Animal animal = converter.toEntity(map);
+        Assertions.assertNotNull(animal);
+        Assertions.assertEquals("12", animal.getId());
+        Assertions.assertEquals("Ada", animal.getName());
+        Assertions.assertEquals("Dog", animal.getRace());
+    }
+
 }
