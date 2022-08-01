@@ -10,7 +10,7 @@ import java.util.function.Predicate;
 /**
  * This implementation will create the instance and then start fill it up by fields.
  */
-public class FieldConstructor implements EntityCreator {
+public class EntityCreatorField implements EntityCreator {
 
     @Override
     public <T> T toEntity(Class<T> entity, Constructor<T> constructor, Map<String, Object> map) {

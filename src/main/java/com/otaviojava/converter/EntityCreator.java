@@ -10,7 +10,7 @@ public interface EntityCreator {
 
     static <T> EntityCreator of(Constructor<T> constructor) {
         if(constructor.getParameterCount() == 0) {
-            return new FieldConstructor();
+            return new EntityCreatorField();
         }
         return null;
     }
