@@ -30,28 +30,8 @@ public class DefaultConverter implements Converter {
                 .map(c -> (Class<T>) c)
                 .orElseThrow(() -> new RuntimeException("It does not bean to the entity " + entity));
         Constructor<T> constructor = getConstructor(bean);
-        if (constructor.getParameterCount() == 0) {
-            T instance = getInstance(constructor);
-            for (Field field : bean.getDeclaredFields()) {
-                field.setAccessible(true);
-                if (field.getAnnotation(Id.class) != null) {
-                    String key = getIdValue(field);
-                    Object value = map.get(key);
-                    if (value != null) {
-                        setValue(instance, field, value);
-                    }
-                } else if (field.getAnnotation(Column.class) != null) {
-                    String key = getColumnName(field);
-                    Object value = map.get(key);
-                    if (value != null) {
-                        setValue(instance, field, value);
-                    }
-                }
-            }
-            return instance;
-
-        }
-        return null;
+        EntityConverter entityConverter = EntityConverter.of(constructor);
+        return entityConverter.toEntity(bean, constructor, map);
     }
 
     @Override
