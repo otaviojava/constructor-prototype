@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
- * This implementation will create the instance and then start fill it up
+ * This implementation will create the instance and then start fill it up by fields.
  */
 public class FieldConstructor implements EntityCreator {
 
