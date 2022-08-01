@@ -38,7 +38,7 @@ public class EntityCreatorField implements EntityCreator {
         return instance;
     }
 
-    private static <T> void setValue(Map<String, Object> map, T instance, Field field, String name) {
+    private <T> void setValue(Map<String, Object> map, T instance, Field field, String name) {
         Object value = map.get(name);
         if (value != null) {
             try {
@@ -49,7 +49,7 @@ public class EntityCreatorField implements EntityCreator {
         }
     }
 
-    private static <T> T getInstance(Constructor<T> constructor) {
+    private <T> T getInstance(Constructor<T> constructor) {
         try {
             constructor.setAccessible(true);
             return constructor.newInstance();
