@@ -27,6 +27,11 @@ class DefaultConverterTest {
     }
 
     @Test
+    public void shouldAddBean() {
+        this.converter.add(Animal.class);
+    }
+
+    @Test
     public void shouldReturnNPEMap() {
         Assertions.assertThrows(NullPointerException.class, ()->
                 converter.toMap(null));
