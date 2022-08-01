@@ -19,7 +19,7 @@ public class FieldConstructor implements EntityCreator {
         for (Field field : entity.getDeclaredFields()) {
             Column column = field.getAnnotation(Column.class);
             Id id = field.getAnnotation(Id.class);
-
+            field.setAccessible(true);
             if (id != null) {
                 field.setAccessible(true);
                 String name = Optional.of(id).map(Id::value)
@@ -35,7 +35,7 @@ public class FieldConstructor implements EntityCreator {
             }
 
         }
-        return null;
+        return instance;
     }
 
     private static <T> void setValue(Map<String, Object> map, T instance, Field field, String name) {
@@ -51,6 +51,7 @@ public class FieldConstructor implements EntityCreator {
 
     private static <T> T getInstance(Constructor<T> constructor) {
         try {
+            constructor.setAccessible(true);
             return constructor.newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException exception) {
             throw new RuntimeException(exception);
