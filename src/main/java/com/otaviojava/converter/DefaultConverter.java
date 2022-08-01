@@ -90,21 +90,19 @@ public class DefaultConverter implements Converter {
     }
 
     private static String getIdValue(Field field) {
-        String key = Optional
+        return Optional
                 .ofNullable(field.getAnnotation(Id.class))
                 .map(Id::value)
                 .filter(Predicate.not(String::isBlank))
                 .orElse("_id");
-        return key;
     }
 
     private static String getColumnName(Field field) {
-        String key = Optional
+        return Optional
                 .ofNullable(field.getAnnotation(Column.class))
                 .map(Column::value)
                 .filter(Predicate.not(String::isBlank))
                 .orElse(field.getName());
-        return key;
     }
 
     private static <T> Object getValue(T entity, Field field) {
