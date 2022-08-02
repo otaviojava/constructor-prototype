@@ -1,6 +1,7 @@
 package com.otaviojava.converter;
 
 import com.otaviojava.converter.entities.Animal;
+import com.otaviojava.converter.entities.Car;
 import com.otaviojava.converter.entities.Person;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -95,10 +96,15 @@ class DefaultConverterTest {
 
     @Test
     public void shouldReturnErrorTwoConstructors() {
-
+        Map<String, Object> map = new HashMap<>();
+        map.put("Entity", Car.class.getSimpleName());
+        Assertions.assertThrows(RuntimeException.class, () ->
+                converter.toEntity(map));
     }
 
     @Test
-    public void shouldUseConstructorConvention() {}
+    public void shouldUseConstructorConvention() {
+
+    }
 
 }
