@@ -93,4 +93,12 @@ class DefaultConverterTest {
         Assertions.assertEquals("Dog", animal.getRace());
     }
 
+    @Test
+    public void shouldReturnErrorTwoConstructors() {
+
+    }
+
+    @Test
+    public void shouldUseConstructorConvention() {}
+
 }
