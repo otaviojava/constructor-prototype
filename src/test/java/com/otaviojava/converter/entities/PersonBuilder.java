@@ -4,7 +4,6 @@ public class PersonBuilder {
     private String id;
     private String name;
     private String city;
-
     PersonBuilder() {
     }
 

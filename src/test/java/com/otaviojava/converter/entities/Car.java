@@ -3,7 +3,6 @@ package com.otaviojava.converter.entities;
 public class Car {
 
     private String name;
-
     private int year;
 
     public Car(String name, int year) {

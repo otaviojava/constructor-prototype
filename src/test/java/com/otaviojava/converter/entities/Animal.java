@@ -20,7 +20,6 @@ public class Animal {
     @Column
     private final  String race;
 
-
     @Constructor
     Animal(@Id String id, @Column("name") String name, @Column("race") String race) {
         this.id = id;
