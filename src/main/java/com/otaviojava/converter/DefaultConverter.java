@@ -8,12 +8,18 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 public class DefaultConverter implements Converter {
 
     private static final Predicate<Constructor<?>> DEFAULT_CONSTRUCTOR = c -> c.getParameterCount() == 0;
     private static final Predicate<Constructor<?>> ANNOTATION_CONSTRUCTOR = c ->
             c.getAnnotation(com.otaviojava.converter.Constructor.class) != null;
+
+    private static final Predicate<Constructor<?>> HAS_PARAMETER = c ->
+            Stream.of(c.getParameters()).anyMatch(p -> Objects.nonNull(p.getAnnotation(Id.class))
+                    || Objects.nonNull(p.getAnnotation(Column.class)));
+    public static final Predicate<Constructor<?>> VALID_CONSTRUCTOR = DEFAULT_CONSTRUCTOR.or(ANNOTATION_CONSTRUCTOR).or(HAS_PARAMETER);
     private final Map<String, Class<?>> beans = new HashMap<>();
 
 
@@ -119,11 +125,10 @@ public class DefaultConverter implements Converter {
     private <T> Constructor<T> getConstructor(Class<T> entity) {
 
         Constructor<?>[] constructors = entity.getDeclaredConstructors();
-        if(constructors.length == 1) {
-            if (constructors[0].getParameterCount() == 0) {
+        if (constructors.length == 1) {
+            if (VALID_CONSTRUCTOR.test(constructors[0])) {
                 return (Constructor<T>) constructors[0];
             }
-
         }
 
         return extractConstructorFromMultiple(constructors);
@@ -132,7 +137,6 @@ public class DefaultConverter implements Converter {
     private <T> Constructor<T> extractConstructorFromMultiple(Constructor<?>[] constructors) {
         Constructor<T> defaultConstructor = null;
         for (Constructor<?> constructor : constructors) {
-
             if (DEFAULT_CONSTRUCTOR.test(constructor)) {
                 defaultConstructor = (Constructor<T>) constructor;
             } else if (ANNOTATION_CONSTRUCTOR.test(constructor)) {
