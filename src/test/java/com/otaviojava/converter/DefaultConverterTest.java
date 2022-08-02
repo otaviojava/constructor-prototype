@@ -38,7 +38,7 @@ class DefaultConverterTest {
 
     @Test
     public void shouldReturnNPEMap() {
-        Assertions.assertThrows(NullPointerException.class, ()->
+        Assertions.assertThrows(NullPointerException.class, () ->
                 converter.toMap(null));
     }
 
@@ -118,9 +118,9 @@ class DefaultConverterTest {
         Product product = converter.toEntity(map);
         Assertions.assertNotNull(product);
         Assertions.assertEquals(10L, product.getId());
-        Assertions.assertEquals( "the product", product.getName());
-        Assertions.assertEquals(  "The product description", product.getDescription());
-        Assertions.assertEquals(  BigDecimal.TEN, product.getPrice());
+        Assertions.assertEquals("the product", product.getName());
+        Assertions.assertEquals("The product description", product.getDescription());
+        Assertions.assertEquals(BigDecimal.TEN, product.getPrice());
     }
 
 }
