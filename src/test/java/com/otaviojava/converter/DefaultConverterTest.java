@@ -3,10 +3,12 @@ package com.otaviojava.converter;
 import com.otaviojava.converter.entities.Animal;
 import com.otaviojava.converter.entities.Car;
 import com.otaviojava.converter.entities.Person;
+import com.otaviojava.converter.entities.Product;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +21,8 @@ class DefaultConverterTest {
         this.converter = new DefaultConverter();
         this.converter.add(Animal.class);
         this.converter.add(Person.class);
+        this.converter.add(Product.class);
+        this.converter.add(Car.class);
     }
 
     @Test
@@ -104,7 +108,19 @@ class DefaultConverterTest {
 
     @Test
     public void shouldUseConstructorConvention() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("Entity", Product.class.getSimpleName());
+        map.put("_id", 10L);
+        map.put("name", "the product");
+        map.put("description", "The product description");
+        map.put("price", BigDecimal.TEN);
 
+        Product product = converter.toEntity(map);
+        Assertions.assertNotNull(product);
+        Assertions.assertEquals(10L, product.getId());
+        Assertions.assertEquals( "the product", product.getName());
+        Assertions.assertEquals(  "The product description", product.getDescription());
+        Assertions.assertEquals(  BigDecimal.TEN, product.getPrice());
     }
 
 }
