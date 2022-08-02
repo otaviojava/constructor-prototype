@@ -22,7 +22,10 @@ public class Product {
     @Column
     private final BigDecimal price;
 
-    public Product(Long id, String name, String description, BigDecimal price) {
+    public Product(@Id Long id,
+                   @Column("name") String name,
+                   @Column("description") String description,
+                   @Column("price") BigDecimal price) {
         this.id = id;
         this.name = name;
         this.description = description;
