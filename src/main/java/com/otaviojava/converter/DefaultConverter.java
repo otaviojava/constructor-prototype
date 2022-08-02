@@ -11,6 +11,9 @@ import java.util.function.Predicate;
 
 public class DefaultConverter implements Converter {
 
+    private static final Predicate<Constructor<?>> DEFAULT_CONSTRUCTOR = c -> c.getParameterCount() == 0;
+    private static final Predicate<Constructor<?>> ANNOTATION_CONSTRUCTOR = c ->
+            c.getAnnotation(com.otaviojava.converter.Constructor.class) != null;
     private final Map<String, Class<?>> beans = new HashMap<>();
 
 
@@ -114,12 +117,25 @@ public class DefaultConverter implements Converter {
     }
 
     private <T> Constructor<T> getConstructor(Class<T> entity) {
-        Constructor<T> defaultConstructor = null;
-        for (Constructor<?> constructor : entity.getDeclaredConstructors()) {
-            if (constructor.getParameterCount() == 0) {
-                defaultConstructor = (Constructor<T>) constructor;
+
+        Constructor<?>[] constructors = entity.getDeclaredConstructors();
+        if(constructors.length == 1) {
+            if (constructors[0].getParameterCount() == 0) {
+                return (Constructor<T>) constructors[0];
             }
-            if (constructor.getAnnotation(com.otaviojava.converter.Constructor.class) != null) {
+
+        }
+
+        return extractConstructorFromMultiple(constructors);
+    }
+
+    private <T> Constructor<T> extractConstructorFromMultiple(Constructor<?>[] constructors) {
+        Constructor<T> defaultConstructor = null;
+        for (Constructor<?> constructor : constructors) {
+
+            if (DEFAULT_CONSTRUCTOR.test(constructor)) {
+                defaultConstructor = (Constructor<T>) constructor;
+            } else if (ANNOTATION_CONSTRUCTOR.test(constructor)) {
                 return (Constructor<T>) constructor;
             }
         }
