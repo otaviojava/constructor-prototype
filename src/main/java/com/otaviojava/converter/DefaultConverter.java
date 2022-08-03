@@ -73,14 +73,6 @@ public class DefaultConverter implements Converter {
         }
     }
 
-    private <T> T getInstance(Constructor<T> constructor) {
-        try {
-            constructor.setAccessible(true);
-            return constructor.newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     private <T> void extractColumn(T entity, Map<String, Object> map, Field field) {
         Object value = getValue(entity, field);
