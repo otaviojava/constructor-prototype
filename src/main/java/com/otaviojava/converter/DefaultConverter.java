@@ -65,15 +65,6 @@ public class DefaultConverter implements Converter {
         return map;
     }
 
-    private <T> void setValue(T instance, Field field, Object value) {
-        try {
-            field.set(instance, value);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
     private <T> void extractColumn(T entity, Map<String, Object> map, Field field) {
         Object value = getValue(entity, field);
         if (value != null) {
